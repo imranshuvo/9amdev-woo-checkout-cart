@@ -15,6 +15,17 @@
  */
 
 
+add_filter( 'plugin_action_links', 'nineamdev_add_plugin_link', 10, 2 );
+function nineamdev_add_plugin_link( $links ) {
+
+    $action_links = array(
+        'settings' => '<a href="' . admin_url( 'admin.php?page=wc-settings&tab=nineamdev-woo-checkout-cart' ) . '" aria-label="' . esc_attr__( 'View settings', '9amdev-woo-checkout-cart' ) . '">' . esc_html__( 'Settings', '9amdev-woo-checkout-cart' ) . '</a>',
+    );
+
+    return array_merge( $action_links, $links );
+}
+
+
 add_action('woocommerce_settings_tabs','nineamdev_woo_checkout_cart_settings_tab');
 
 function nineamdev_woo_checkout_cart_settings_tab(){
