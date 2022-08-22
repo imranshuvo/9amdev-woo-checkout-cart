@@ -15,6 +15,9 @@
  */
 
 
+include dirname(__FILE__).'/inc/helpers.php';
+
+
 add_filter( 'plugin_action_links', 'nineamdev_add_plugin_link', 10, 2 );
 function nineamdev_add_plugin_link( $links ) {
 
@@ -61,25 +64,49 @@ function nineamdev_save_settings(){
 }
 
 
-//
-add_filter('woocommerce_cart_item_name','nineamdev_add_remove_and_quantity_field', 10, 3);
 
-function nineamdev_add_remove_and_quantity_field($product_name, $cart_item, $cart_item_key){
-    //Get the product/variation id first
-    $_product = apply_filters( 'woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key );
 
-    $html = apply_filters( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-                        'woocommerce_cart_item_remove_link',
-                        sprintf(
-                            '<a href="%s" class="remove" aria-label="%s" data-product_id="%s" data-product_sku="%s">&times;</a>',
-                            esc_url( wc_get_cart_remove_url( $cart_item_key ) ),
-                            esc_html__( 'Remove this item', 'woocommerce' ),
-                            esc_attr( $_product->get_id() ),
-                            esc_attr( $_product->get_sku() )
-                        ),
-                        $cart_item_key
-                    );
-    $html .= $product_name;
-    $html .= '';
-    return $html;
+/***
+ * *
+ * *
+ * */
+
+//Add the required styles
+add_action('wp_enqueue_scripts','nineamdev_woo_checkout_cart_scripts');
+
+function nineamdev_woo_checkout_cart_scripts(){
+    wp_enqueue_style('nineamdev-checkout-cart-style', plugins_url('assets/css/style.css', __FILE__));
+
+    wp_register_script('nineamdev-checkout-cart-script', plugins_url('assets/js/custom.js', __FILE__), array('jquery'));
+    wp_enqueue_script('nineamdev-checkout-cart-script');
+
+    $ajax_url = admin_url('admin-ajax.php');
+    wp_localize_script('nineamdev-checkout-cart-script','nineamdev_checkout_ajax_object', array(
+            'ajax_url' => $ajax_url,
+    ));
+}
+
+
+//Add the edit button
+add_action('woocommerce_checkout_before_order_review','nineamdev_checkout_edit_button_html', 1);
+
+function nineamdev_checkout_edit_button_html(){
+    if(!nineamdev_is_enabled()){
+        return;
+    }
+    echo '<a href="#" class="nineamdev_edit-cart"><img src="'.plugins_url('assets/images/edit.png', __FILE__).'"> '.__('Edit items','9amdev-woo-checkout-cart').'</a>';
+}
+
+
+//Load the cart in a popup
+add_action('wp_footer','nineamdev_checkout_cart_html');
+
+function nineamdev_checkout_cart_html(){
+    if(!nineamdev_is_enabled() || is_wc_endpoint_url('order-received') || !is_checkout()){
+        return;
+    }
+    ?>
+
+
+    <?php 
 }
