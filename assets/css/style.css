@@ -1,5 +1,59 @@
+.nineamdev_modal-wrapper.nineamdev_modal-cart {
+	display: none;
+}
+a.nineamdev_edit-cart {
+	display: flex;
+}
 .nineamdev_edit-cart img {
-	width: 15px;
-	display: inline;
-	margin-right: 5px;
+    width: 15px;
+    display: inline-block;
+    margin-right: 5px;
+    object-fit: contain;
+}
+.nineamdev_modal-wrapper.nineamdev_modal-cart .cart-collaterals,
+.nineamdev_modal-wrapper.nineamdev_modal-cart .coupon {
+	display: none !important;
+}
+.nineamdev_modal-wrapper.nineamdev_modal-cart {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    background: rgba(0,0,0,0.5);
+}
+.nineamdev_modal-cart-inner {
+    padding: 24px;
+    background: white;
+    position: relative;
+}
+.nineamdev_modal-cart.nineamdev_modal-wrapper form.woocommerce-cart-form table.shop_table {
+    margin-bottom: 0px;
+}
+.nineamdev_modal-cart.nineamdev_modal-wrapper form.woocommerce-cart-form {
+    margin-bottom: 0px;
+}
+.nineamdev_modal-cart.nineamdev_modal-wrapper a#nineam_woo_cart_close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: red;
+    color: white;
+    overflow: hidden;
+    width: 24px;
+    height: 24px;
+}
+.nineamdev_modal-cart.nineamdev_modal-wrapper a#nineam_woo_cart_close svg {
+	fill: white;
+}
+.nineamdev_modal-cart.nineamdev_modal-wrapper a.nineamdev_edit-cart {
+	display: inline-block;
+	text-decoration: none;
+}
+.nineamdev_modal-cart form.woocommerce-cart-form {
+    width: 100% !important;
+    float: none !important;
 }

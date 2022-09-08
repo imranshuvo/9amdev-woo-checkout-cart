@@ -2,23 +2,14 @@ jQuery(document).ready(function($){
 	$('a.nineamdev_edit-cart').on('click', function(e){
 		e.preventDefault();
 
-		console.log('Yes clicked');
+		//Show the cart in popup 
+		$('.nineamdev_modal-wrapper.nineamdev_modal-cart').css('display','flex');
+	});
 
-		// $.ajax({
-		// 	type: 'post',
-		// 	url: nineamdev_checkout_ajax_object.ajax_url,
-		// 	data: {
-		// 		action: "some_action"
-		// 	},
-		// 	beforeSend: function(){
-		// 		console.log('Sending');
-		// 	},
-		// 	complete: function(response){
-		// 		console.log('Done '+ response);
-		// 	}
-		// });
+	$('a#nineam_woo_cart_close').on('click', function(e){
+		e.preventDefault();
 
 		//Show the cart in popup 
-		$('.nineamdev_popup-cart').addClass('active');
+		$('.nineamdev_modal-wrapper.nineamdev_modal-cart').css('display','none');
 	});
 });

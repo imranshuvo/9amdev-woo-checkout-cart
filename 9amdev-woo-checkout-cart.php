@@ -14,6 +14,7 @@
  * Domain Path:       /languages
  */
 
+defined( 'ABSPATH' ) || exit;
 
 include dirname(__FILE__).'/inc/helpers.php';
 
@@ -45,13 +46,28 @@ add_action('woocommerce_settings_nineamdev-woo-checkout-cart','nineamdev_woo_che
 
 function nineamdev_woo_checkout_tab_content(){
     $is_enabled = get_option('nineamdev_woo_checkout_cart_enable') == 'yes' ? 'checked' : '';
-
+    $label = get_label();
     ?>
     <h2><?php _e('Woocommerce Checkout Cart Update Settings','9amdev-woo-checkout-cart'); ?></h2>
 
     <form method="post" action="options.php">
         <input type="hidden" name="nineamdev_woo_checkout_cart_enable" value="no">
-        <input type="checkbox" name="nineamdev_woo_checkout_cart_enable" value="yes" <?php echo $is_enabled; ?> > <?php _e('Enable','9amdev-woo-checkout-cart'); ?>
+        <table class="form-table">
+            <tbody>
+                <tr valign="top" class="">
+                    <th scope="row"><?php _e('Enable','9amdev-woo-checkout-cart'); ?></th>
+                    <td>
+                        <input type="checkbox" name="nineamdev_woo_checkout_cart_enable" value="yes" <?php echo $is_enabled; ?> > 
+                    </td>
+                </tr>
+                <tr valign="top" class="">
+                    <th scope="row"><?php _e('Label','9amdev-woo-checkout-cart'); ?></th>
+                    <td>
+                        <input type="text" name="nineamdev_woo_check_cart_text" placeholder="" value="<?php echo $label; ?>">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     <?php 
 }
 
@@ -62,10 +78,10 @@ function nineamdev_save_settings(){
     if(isset($_POST['nineamdev_woo_checkout_cart_enable'])){
         update_option('nineamdev_woo_checkout_cart_enable', $_POST['nineamdev_woo_checkout_cart_enable']);
     }
+    if(isset($_POST['nineamdev_woo_check_cart_text'])){
+        update_option('nineamdev_woo_check_cart_text', sanitize_text_field($_POST['nineamdev_woo_check_cart_text']));
+    }
 }
-
-
-
 
 /***
  * *
@@ -81,21 +97,23 @@ function nineamdev_woo_checkout_cart_scripts(){
     wp_register_script('nineamdev-checkout-cart-script', plugins_url('assets/js/custom.js', __FILE__), array('jquery'));
     wp_enqueue_script('nineamdev-checkout-cart-script');
 
-    $ajax_url = admin_url('admin-ajax.php');
-    wp_localize_script('nineamdev-checkout-cart-script','nineamdev_checkout_ajax_object', array(
-            'ajax_url' => $ajax_url,
-    ));
+    // $ajax_url = admin_url('admin-ajax.php');
+    // wp_localize_script('nineamdev-checkout-cart-script','nineamdev_checkout_ajax_object', array(
+    //         'ajax_url' => $ajax_url,
+    // ));
 }
 
 
 //Add the edit button
-add_action('woocommerce_checkout_before_order_review','nineamdev_checkout_edit_button_html', 1);
+add_action('woocommerce_checkout_order_review','nineamdev_checkout_edit_button_html', 1);
 
 function nineamdev_checkout_edit_button_html(){
     if(!nineamdev_is_enabled()){
         return;
     }
-    echo '<a href="#" class="nineamdev_edit-cart"><img src="'.plugins_url('assets/images/edit.png', __FILE__).'"> '.__('Edit items','9amdev-woo-checkout-cart').'</a>';
+
+    $label = get_label();
+    echo '<a href="#" class="nineamdev_edit-cart"><img src="'.plugins_url('assets/images/edit.png', __FILE__).'"> '.esc_html__($label,'9amdev-woo-checkout-cart').'</a>';
 }
 
 
@@ -107,7 +125,18 @@ function nineamdev_checkout_cart_html(){
         return;
     }
     ?>
-
-
+    <div class="nineamdev_modal-wrapper nineamdev_modal-cart">
+        <div class="nineamdev_modal-cart-inner">
+            <a href="" id="nineam_woo_cart_close" class="absolute top-0 right-0 bg-slate-700">
+                <svg viewBox="0 0 24 24" focusable="false" height="24" width="24" jsname="lZmugf" class="fill-white">
+                    <path d="M0 0h24v24H0z" fill="none"></path>
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>
+                </svg>
+            </a>
+            <?php  
+                echo do_shortcode('[woocommerce_cart]');
+            ?>
+        </div>
+    </div>
     <?php 
 }
