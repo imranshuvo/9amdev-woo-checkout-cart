@@ -3,6 +3,7 @@
 }
 a.nineamdev_edit-cart {
 	display: flex;
+    margin-bottom: 10px;
 }
 .nineamdev_edit-cart img {
     width: 15px;
